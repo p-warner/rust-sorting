@@ -87,7 +87,14 @@ name = "sorting"
 version = "0.1.0"
 dependencies = [
  "rand",
+ "sorts",
 ]
+
+[[package]]
+name = "sorts"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aaeb1046047ab796c67658308dee604f6901cdcee3c40bb5d23c3cffa43dafb8"
 
 [[package]]
 name = "syn"
