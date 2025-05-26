@@ -51,13 +51,60 @@ fn main() {
         //println!("{:?}", random_vec);
     });
 
+    let handle_quick = thread::spawn(|| {
+        let mut random_vec: Vec<u32> = get_vec(SIZE, SIZE);//size, max value
+        let hi: usize = random_vec.len() - 1;
+        let lo: usize = 0;
+        //println!("{:?}", random_vec);
+        let now = Instant::now();
+        quick_sort(&mut random_vec, lo, hi); 
+        println!("QuickSort: {:.2?}", now.elapsed());
+        //println!("{:?}", random_vec);
+    });
+
     //keep children running until main thread quits
     handle_bubble.join().unwrap();
     handle_selection.join().unwrap();
     handle_insertion.join().unwrap();
     handle_insertion_import.join().unwrap();
-
+    handle_quick.join().unwrap();
 }
+
+/*
+ * QS that accepts the vec to sort, and the bounds of the portion of the 
+ * vec to sort with lo (left?) and hi (right) bounds.
+ */
+fn quick_sort(vec: &mut Vec<u32>, lo: usize, hi: usize) {
+    //println!("qs(vec, {lo}, {hi})"); //DEBUG.
+
+    //Base case
+    if lo >= hi {
+        return
+    }
+
+    //pivot at the end
+    let pivot = vec[hi];
+    let mut ctr = lo; //bump this 'pointer' on every swap.
+
+    for i in lo..hi {
+        if vec[i] < pivot {
+            swap(vec, lo, hi);
+            ctr += 1;
+        }
+    }
+
+    swap(vec, ctr, hi); //now swap the pivot element with the ctr element.
+
+    //Recursive call for lo (left) side and hi (right) side
+    if ctr != 0 { //won't allow -1 in usize. TODO: is this the best way? Works for now.
+        quick_sort(vec, lo, ctr - 1);
+    }else{
+        quick_sort(vec, lo, ctr);
+    }
+    
+    quick_sort(vec, ctr + 1, hi);
+}
+
 
 //receive a param called vec, that is a reference to a vector that is mutable
 //also must say this will change when we pass to swap fn
